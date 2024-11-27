@@ -60,7 +60,7 @@ pub fn literal_and_lang(
         let mut strings = vec![];
 
         for i in &yaml_langs {
-            let enum_key = Ident::new(&&check_yaml::to_enumval_format(i), Span::call_site());
+            let enum_key = Ident::new(&check_yaml::to_enumval_format(i), Span::call_site());
 
             // 存在しないキーの場合、allキーのリテラルを適応する
             idents.push(enum_key);
@@ -73,7 +73,7 @@ pub fn literal_and_lang(
 
         Ok(quote! {
             {
-                use crate::_langrustang_gen::Lang::*;
+                use crate::_langrustang_autogen::Lang::*;
 
                 match #lang_expr {
                     #( #idents => #strings, )*

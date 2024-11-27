@@ -97,7 +97,7 @@ fn i18n_parse(input: ParseStream) -> Result<TokenStream> {
         .collect();
 
     Ok(quote! {
-        pub mod _langrustang_gen {
+        pub mod _langrustang_autogen {
             #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
             pub enum Lang {
                 #(
