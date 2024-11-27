@@ -64,13 +64,13 @@ format_t_ex2:
 
 #### main.rs:
 ```rust
-langrustang::i18n!("lang.yaml");  // Auto-generate `_langrustang_autogen::Lang`
+langrustang::i18n!("lang.yaml");  // `_langrustang_autogen::Lang` を自動生成する
 use crate::_langrustang_autogen::Lang;
 
 use langrustang::lang_t;
 
 fn main() {
-    // The enum elements are automatically generated based on the yaml keys.
+    // enum の要素は、yamlに書いたキーによって自動で生成されます
     let lang_en = Lang::En;
     let lang_ja = Lang::Ja;
     let lang_zh = Lang::Zh;
