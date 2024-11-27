@@ -9,10 +9,7 @@ use syn::{
     Error, Ident, LitStr, Result,
 };
 
-use crate::{
-    lang_yaml::{LangYaml, LocalizedText},
-    YAML_DATA, YAML_LANGS, YAML_PATH,
-};
+use crate::{lang_yaml::LangYaml, YAML_DATA, YAML_LANGS, YAML_PATH};
 
 pub fn _i18n(tokens: TokenStream) -> TokenStream {
     i18n_parse
