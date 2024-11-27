@@ -67,13 +67,14 @@ pub fn not_allkey_only(
     }
     let lang_expr = args.remove(0);
 
-    if is_containts_all {
-        let mut idents = vec![];
-        let mut strings = vec![];
+    // match arm の作成
+    let mut idents = vec![];
+    let mut strings = vec![];
 
-        let mut sorted_yaml_langs: Vec<_> = yaml_langs.iter().collect();
-        sorted_yaml_langs.sort();
+    let mut sorted_yaml_langs: Vec<_> = yaml_langs.iter().collect();
+    sorted_yaml_langs.sort();
 
+    let match_arms: Vec<_> = if is_containts_all {
         for i in sorted_yaml_langs {
             let enum_key = Ident::new(&check_yaml::to_enumval_format(i), Span::call_site());
 
@@ -86,7 +87,7 @@ pub fn not_allkey_only(
             );
         }
 
-        let match_arms: Vec<_> = idents
+        idents
             .iter()
             .zip(strings.iter())
             .map(|(i, s)| {
@@ -94,17 +95,7 @@ pub fn not_allkey_only(
                     #i => format!(#s #(, #args)* )
                 }
             })
-            .collect();
-
-        Ok(quote! {
-            {
-                use crate::_langrustang_autogen::Lang::*;
-
-                match #lang_expr {
-                    #(#match_arms),* ,
-                }
-            }
-        })
+            .collect()
     } else {
         // 数が足りているかチェックして足りなければ返す
         if yaml_langs.len() > localized_text.len() {
@@ -119,11 +110,6 @@ pub fn not_allkey_only(
 
             return err_return(format!("Missing language key: {:?}", sorted_missing));
         }
-        let mut idents = vec![];
-        let mut strings = vec![];
-
-        let mut sorted_yaml_langs: Vec<_> = yaml_langs.iter().collect();
-        sorted_yaml_langs.sort();
 
         for i in sorted_yaml_langs {
             let enum_key = Ident::new(&check_yaml::to_enumval_format(i), Span::call_site());
@@ -137,7 +123,7 @@ pub fn not_allkey_only(
             );
         }
 
-        let match_arms: Vec<_> = idents
+        idents
             .iter()
             .zip(strings.iter())
             .map(|(i, s)| {
@@ -145,16 +131,16 @@ pub fn not_allkey_only(
                     #i => format!(#s #(, #args)* )
                 }
             })
-            .collect();
+            .collect()
+    };
 
-        Ok(quote! {
-            {
-                use crate::_langrustang_autogen::Lang::*;
+    Ok(quote! {
+        {
+            use crate::_langrustang_autogen::Lang::*;
 
-                match #lang_expr {
-                    #(#match_arms),* ,
-                }
+            match #lang_expr {
+                #(#match_arms),* ,
             }
-        })
-    }
+        }
+    })
 }

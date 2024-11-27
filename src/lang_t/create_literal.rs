@@ -48,14 +48,14 @@ pub fn literal_and_lang(
     // 第2引数の取得
     let lang_expr = parsed.get(1).unwrap();
 
+    // ソートしてから渡す
+    let mut sorted_langs: Vec<_> = yaml_langs.iter().map(|i| i.as_str()).collect();
+    sorted_langs.sort();
+
+    let mut idents = vec![];
+    let mut strings = vec![];
+
     if is_containts_all {
-        // ソートしてから渡す
-        let mut sorted_langs: Vec<_> = yaml_langs.iter().map(|i| i.as_str()).collect();
-        sorted_langs.sort();
-
-        let mut idents = vec![];
-        let mut strings = vec![];
-
         for i in sorted_langs {
             let enum_key = Ident::new(&check_yaml::to_enumval_format(i), Span::call_site());
 
@@ -64,19 +64,10 @@ pub fn literal_and_lang(
             strings.push(
                 localized_text
                     .get(i)
-                    .unwrap_or_else(|| localized_text.get("all").unwrap()),
+                    .unwrap_or_else(|| localized_text.get("all").unwrap())
+                    .as_str(),
             );
         }
-
-        Ok(quote! {
-            {
-                use crate::_langrustang_autogen::Lang::*;
-
-                match #lang_expr {
-                    #( #idents => #strings, )*
-                }
-            }
-        })
     } else {
         // 数が足りているかチェックして足りなければ返す
         if yaml_langs.len() > localized_text.len() {
@@ -92,28 +83,21 @@ pub fn literal_and_lang(
             return err_return(format!("Missing language key: {:?}", sorted_missing));
         }
 
-        // ソートしてから渡す
-        let mut sorted_langs: Vec<_> = yaml_langs.iter().map(|i| i.as_str()).collect();
-        sorted_langs.sort();
-
-        let mut idents = vec![];
-        let mut strings = vec![];
-
         for i in sorted_langs {
             let enum_key = Ident::new(&check_yaml::to_enumval_format(i), Span::call_site());
 
             idents.push(enum_key);
-            strings.push(localized_text[i].clone());
+            strings.push(localized_text[i].as_str());
         }
-
-        Ok(quote! {
-            {
-                use crate::_langrustang_autogen::Lang::*;
-
-                match #lang_expr {
-                    #( #idents => #strings, )*
-                }
-            }
-        })
     }
+
+    Ok(quote! {
+        {
+            use crate::_langrustang_autogen::Lang::*;
+
+            match #lang_expr {
+                #( #idents => #strings, )*
+            }
+        }
+    })
 }
