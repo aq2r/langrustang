@@ -8,6 +8,17 @@ Multilingual support is possible based on yaml.
 
 (Not distributed on crates.io)
 
+<br>
+
+(Mostly for my own use) If you want to use this crate, 
+
+add the following to the dependencies in your Cargo.toml:
+
+```toml
+# Please change the tag version accordingly.
+langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.0" }
+```
+
 ## How to write yaml
 
 The yaml file is written in the following format:
