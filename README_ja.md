@@ -1,14 +1,11 @@
 # langrustang
+Rustの多言語対応用プログラム
 
-[日本語の説明はこちら](./README_ja.md)
-
-Multilingual Support for Rust Program
-
-Multilingual support is possible based on yaml.
+yamlを使って多言語対応ができます。
 
 ## How to write yaml
 
-The yaml file is written in the following format:
+yaml ファイルの書き方:
 
 ```yaml
 Any_key:
@@ -21,13 +18,13 @@ Any_key2:
   ...
 ```
 
-Any_key can contain any characters.
+Any_key は任意の文字を使うことができます。
 
-The first character of any_lang_key must be a lowercase alphabet,
+any_lang_key の最初の文字は小文字のアルファベットである必要があります。
 
-and the second and subsequent characters must be lowercase alphabets, numbers, or underscores.
+2番目以降の文字は小文字のアルファベット、数字、またはアンダースコアである必要があります。
 
-And the last character of the language key cannot be an underscore.
+また、言語キーの最後の文字をアンダースコアにすることはできません。
 
 ## Examples
 
@@ -101,7 +98,7 @@ fn main() {
 
 - Example 1
 
-If the language key is just 'all', then it will be retrieved using only the key.
+言語キーが `all` のみの場合は、そのキーを使用して取得できます。
 
 ```rust
 println!("{}", lang_t!("lang_t_ex1")); // ALL_EXAMPLE
@@ -109,9 +106,9 @@ println!("{}", lang_t!("lang_t_ex1")); // ALL_EXAMPLE
 
 - Example 2
 
-If there are other keys present besides `all`,
+`all` キー以外に他のキーがある場合、
 
-we use the auto-generated Lang Enum to extract them.
+自動生成された Lang Enum を使用して取得します。
 
 ```rust
 println!("{}", lang_t!("lang_t_ex2", lang_en)); // hello!
@@ -121,9 +118,9 @@ println!("{}", lang_t!("lang_t_ex2", lang_zh)); // 你好
 
 - Example 3
 
-If a language key is missing, specifying key will result in a compilation error.
+足りない言語キーがある場合、キーを指定するとコンパイルエラーになります。
 
-However, if the `all` key is specified, that value will be used instead.
+ただし、`all` キーが指定されている場合は、その値が代わりに使用されます。
 
 ```rust
 println!("{}", lang_t!("lang_t_ex3", lang_en)); // hello!
@@ -134,13 +131,13 @@ println!("{}", lang_t!("lang_t_ex3", lang_anykey1)); // ALL
 
 ## format_t!, print_t!, println_t!
 
-If you only have the `all` key, pass the YAML key first and
+`all` キーだけの場合は、最初に yaml のキーを渡してから、
 
-the formatting arguments from the second onwards, just like a normal format.
+通常のフォーマットと同じように、2番目以降の format の引数を渡します。
 
-If a language key is specified, pass the yaml key as the first argument,
+言語キーが他に指定されている場合は、yaml のキーを最初に渡してから、
 
-the Lang Enum as the second argument, and then the thing you want to format.
+2番目の引数に Lang Enum を渡して、それから format の引数を渡します。
 
 ```rust
 let name = "Ferris";
@@ -149,8 +146,8 @@ println_t!("format_t_ex1", name); // Hi, Ferris!
 println_t!("format_t_ex2", lang_ja, name); // Ferris, おはよう!
 ```
 
-## error even though the code is correct
+## コードが正しいのにエラーが発生する
 
-If you get an error in vscode even though your code is correct,
+コードが正しいのに vscode でエラーが発生する場合は、
 
-restarting rust-analyzer will resolve the issue.
+rust-analyzer を再起動すると解決します。
