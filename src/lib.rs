@@ -119,6 +119,8 @@ mod format_t;
 mod i18n;
 mod lang_t;
 mod lang_yaml;
+mod print_t;
+mod println_t;
 
 use std::{
     collections::HashSet,
@@ -129,6 +131,8 @@ use format_t::_format_t;
 use i18n::_i18n;
 use lang_t::_lang_t;
 use lang_yaml::LangYaml;
+use print_t::_print_t;
+use println_t::_println_t;
 use proc_macro::TokenStream;
 
 pub(crate) static YAML_PATH: LazyLock<Mutex<String>> = LazyLock::new(|| Mutex::new(String::new()));
@@ -171,4 +175,14 @@ pub fn lang_t(tokens: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn format_t(tokens: TokenStream) -> TokenStream {
     _format_t(tokens.into()).into()
+}
+
+#[proc_macro]
+pub fn print_t(tokens: TokenStream) -> TokenStream {
+    _print_t(tokens.into()).into()
+}
+
+#[proc_macro]
+pub fn println_t(tokens: TokenStream) -> TokenStream {
+    _println_t(tokens.into()).into()
 }
