@@ -96,14 +96,62 @@ fn i18n_parse(input: ParseStream) -> Result<TokenStream> {
         .map(|s| Ident::new(s, Span::call_site()))
         .collect();
 
+    // std::fmt::Display
+    let display_match_arms: Vec<_> = langs_ident
+        .iter()
+        .zip(langs.iter())
+        .map(|(ident, lang)| {
+            quote! {
+                #ident => write!(f, #lang ),
+            }
+        })
+        .collect();
+
+    // std::str::FromStr
+    let fromstr_match_arms: Vec<_> = langs_ident
+        .iter()
+        .zip(langs.iter())
+        .map(|(ident, lang)| {
+            let lower = lang.to_ascii_lowercase();
+            let apper = lang.to_ascii_uppercase();
+
+            quote! {
+                #lang => Ok( #ident ),
+                #lower => Ok( #ident ),
+                #apper => Ok( #ident ),
+            }
+        })
+        .collect();
+
     Ok(quote! {
         pub mod _langrustang_autogen {
             #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
             pub enum Lang {
-                #(
-                    #langs_ident,
-                )*
+                #(#langs_ident),* ,
             }
+
+            impl std::fmt::Display for Lang {
+                fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                    use Lang::*;
+
+                    match self {
+                        #(#display_match_arms)*
+                    }
+                }
+            }
+
+            impl std::str::FromStr for Lang {
+                type Err = String;
+                fn from_str(s: &str) -> Result<Self, Self::Err> {
+                    use Lang::*;
+
+                    match s {
+                        #(#fromstr_match_arms)*
+                        _ => Err(format!("Unknown option: `{}`", s)),
+                    }
+                }
+            }
+
         }
     })
 }
@@ -126,15 +174,52 @@ mod tests {
     fn test_i18n_ok() {
         let token1 = _i18n(quote! { "files/test_file.yaml" }).to_string();
         let token2 = quote! {
-           pub mod _langrustang_autogen {
-               #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-               pub enum Lang {
-                   En,
-                   Ja,
-                   Test1,
-                   Zh,
-               }
-           }
+            pub mod _langrustang_autogen {
+                #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+                pub enum Lang {
+                    En,
+                    Ja,
+                    Test1,
+                    Zh,
+                }
+
+                impl std::fmt::Display for Lang {
+                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        use Lang::*;
+
+                        match self {
+                            En => write!(f, "En"),
+                            Ja => write!(f, "Ja"),
+                            Test1 => write!(f, "Test1"),
+                            Zh => write!(f, "Zh"),
+                        }
+                    }
+                }
+
+                impl std::str::FromStr for Lang {
+                    type Err = String;
+                    fn from_str(s: &str) -> Result<Self, Self::Err> {
+                        use Lang::*;
+
+                        match s {
+                            "En" => Ok(En),
+                            "en" => Ok(En),
+                            "EN" => Ok(En),
+                            "Ja" => Ok(Ja),
+                            "ja" => Ok(Ja),
+                            "JA" => Ok(Ja),
+                            "Test1" => Ok(Test1),
+                            "test1" => Ok(Test1),
+                            "TEST1" => Ok(Test1),
+                            "Zh" => Ok(Zh),
+                            "zh" => Ok(Zh),
+                            "ZH" => Ok(Zh),
+
+                            _ => Err(format!("Unknown option: `{}`", s)),
+                        }
+                    }
+                }
+            }
         }
         .to_string();
 
