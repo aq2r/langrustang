@@ -12,7 +12,7 @@ use syn::{
     Error, Expr, ExprLit, Ident, Lit, Result, Token,
 };
 
-use crate::parse_yaml::{LangYaml, LocalizedText};
+use crate::lang_yaml::{LangYaml, LocalizedText};
 use crate::{YAML_DATA, YAML_LANGS, YAML_PATH};
 
 pub fn _lang_t(tokens: TokenStream) -> TokenStream {

@@ -1,6 +1,6 @@
 mod i18n;
 mod lang_t;
-mod parse_yaml;
+mod lang_yaml;
 
 use std::{
     collections::HashSet,
@@ -9,7 +9,7 @@ use std::{
 
 use i18n::_i18n;
 use lang_t::_lang_t;
-use parse_yaml::LangYaml;
+use lang_yaml::LangYaml;
 use proc_macro::TokenStream;
 
 pub(crate) static YAML_PATH: LazyLock<Mutex<String>> = LazyLock::new(|| Mutex::new(String::new()));
