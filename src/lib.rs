@@ -50,6 +50,15 @@
 //!   ja: おはよう
 //!   en: hello!
 //!   zh: 你好
+//!
+//! format_t_ex1:
+//!   all: "Hi, {}! "
+//!
+//! format_t_ex2:
+//!   all: "{}, ALL!"
+//!   ja: "{}, おはよう!"
+//!   en: "{}, Hello!"
+//!   zh: "{}, 你好!"
 //! ```
 //!
 //! #### main.rs:
@@ -77,6 +86,10 @@
 //!     println!("{}", lang_t!("lang_t_ex3", lang_anykey1)); // ALL
 //!
 //!     // println!("{}", lang_t!("lang_t_ex4", lang_anykey1)); // Missing language key: ["any_key1", "some_key_2"]
+//!
+//!     let name = "Ferris";
+//!     println_t!("format_t_ex1", name);
+//!     println_t!("format_t_ex2", lang_ja, name);
 //! }
 //! ```
 //!
@@ -114,6 +127,29 @@
 //!
 //! // println!("{}", lang_t!("lang_t_ex4", lang_en)); // Compile Error!
 //! ```
+//!
+//! ## format_t!, print_t!, println_t!
+//!
+//! If you only have the `all` key, pass the YAML key first and
+//!
+//! the formatting arguments from the second onwards, just like a normal format.
+//!
+//! If a language key is specified, pass the yaml key as the first argument,
+//!
+//! the Lang Enum as the second argument, and then the thing you want to format.
+//!
+//! ```rust,ignore
+//! let name = "Ferris";
+//!
+//! println_t!("format_t_ex1", name); // Hi, Ferris!
+//! println_t!("format_t_ex2", lang_ja, name); // Ferris, おはよう!
+//! ```
+//!
+//! ## error even though the code is correct
+//!
+//! If you get an error in vscode even though your code is correct,
+//!
+//! restarting rust-analyzer will resolve the issue.
 
 mod format_t;
 mod i18n;
