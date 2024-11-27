@@ -1,19 +1,14 @@
-use std::collections::{HashMap, HashSet};
-use std::sync::{LazyLock, Mutex};
+mod create_literal;
 
-use proc_macro2::{Span, TokenStream};
-use quote::quote;
-use serde::de::value;
-use syn::token::Comma;
+use proc_macro2::TokenStream;
 use syn::{
     parse::{ParseStream, Parser},
     punctuated::Punctuated,
     spanned::Spanned,
-    Error, Expr, ExprLit, Ident, Lit, Result, Token,
+    Error, Expr, ExprLit, Lit, Result, Token,
 };
 
-use crate::lang_yaml::{LangYaml, LocalizedText};
-use crate::{YAML_DATA, YAML_LANGS, YAML_PATH};
+use crate::{YAML_DATA, YAML_LANGS};
 
 pub fn _lang_t(tokens: TokenStream) -> TokenStream {
     lang_t_parse
@@ -22,11 +17,6 @@ pub fn _lang_t(tokens: TokenStream) -> TokenStream {
 }
 
 fn lang_t_parse(input: ParseStream) -> Result<TokenStream> {
-    let yaml_path = {
-        let lock = YAML_PATH.lock().unwrap();
-        lock.clone()
-    };
-
     let yaml_langs = {
         let lock = YAML_LANGS.lock().unwrap();
         lock.clone()
@@ -45,16 +35,10 @@ fn lang_t_parse(input: ParseStream) -> Result<TokenStream> {
             Some(value) => value.clone(),
             None => {
                 return err_return(
-                    "langrustang::i18n is not used,  please set the yaml path.".into(),
+                    "langrustang::i18n is not used, please set the yaml path.".into(),
                 )
             }
         }
-    };
-
-    match parsed.len() {
-        0 => return err_return("Expected string literal".into()),
-        3.. => return err_return("Too many args".into()),
-        _ => (),
     };
 
     // 指定された文字列リテラルを取得
@@ -74,118 +58,31 @@ fn lang_t_parse(input: ParseStream) -> Result<TokenStream> {
         return err_return(format!("Unknown Key: {}", key));
     };
 
+    // 言語キーが all のみかどうか
+    let is_allonly_key =
+        localized_text.len() == 1 && localized_text.iter().any(|(lang, _)| lang == "all");
+
     match parsed.len() {
         // リテラルのみの指定の場合
         1 => {
-            // all だけかを確かめる
-            for (localized_key, _) in localized_text.iter() {
-                if !(localized_key.to_ascii_lowercase() == "all") {
-                    return err_return(format!("Key: {} is Localized", key));
-                }
+            // キーが all の時のみ実行
+            match is_allonly_key {
+                true => create_literal::literal_only(parsed, localized_text, &key),
+                false => err_return(format!("Key: {} is Localized", key)),
             }
-
-            let value = match localized_text.get("all") {
-                Some(v) => v,
-                None => return err_return("Failed to get all key".into()),
-            };
-            return Ok(quote! { #value });
         }
 
         // リテラルと言語の指定の場合
-        2 => literal_and_lang(parsed, localized_text, yaml_langs),
+        2 => {
+            // all キーのみの場合、引数が多すぎるので返す
+            match is_allonly_key {
+                true => err_return(format!("Key: {} is Not Localized", key)),
+                false => create_literal::literal_and_lang(parsed, localized_text, yaml_langs),
+            }
+        }
 
         _ => unreachable!(),
     }
-}
-
-fn literal_and_lang(
-    parsed: Punctuated<Expr, Comma>,
-    localized_text: &LocalizedText,
-    yaml_langs: HashSet<String>,
-) -> Result<TokenStream> {
-    let err_return = |s: String| Err(Error::new(parsed.span(), s));
-
-    // all を含むかで分岐
-    let is_containts_all = localized_text
-        .iter()
-        .any(|(key, _)| key.to_ascii_lowercase() == "all");
-
-    // 第2引数の取得
-    let lang_expr = parsed.get(1).unwrap();
-
-    if is_containts_all {
-        let mut idents = vec![];
-        let mut strings = vec![];
-
-        for i in &yaml_langs {
-            let enum_key = Ident::new(&to_enum_elem_format(i), Span::call_site());
-
-            idents.push(enum_key);
-            strings.push(
-                localized_text
-                    .get(i)
-                    .unwrap_or_else(|| localized_text.get("all").unwrap()),
-            );
-        }
-
-        Ok(quote! {
-            {
-                use crate::_langrustang_gen::Lang::*;
-
-                match #lang_expr {
-                    #( #idents => #strings, )*
-                }
-            }
-        })
-    } else {
-        // 数が足りているかチェックして足りなければ返す
-        if yaml_langs.len() > localized_text.len() {
-            let localized_lang: HashSet<_> =
-                localized_text.iter().map(|(k, _)| k.clone()).collect();
-
-            let mut missing: HashSet<_> = yaml_langs.difference(&localized_lang).collect();
-            missing.remove(&"all".to_string());
-
-            return err_return(format!("Missing language key: {:?}", missing));
-        }
-
-        let mut idents = vec![];
-        let mut strings = vec![];
-
-        for i in &yaml_langs {
-            let enum_key = Ident::new(&to_enum_elem_format(i), Span::call_site());
-
-            idents.push(enum_key);
-            strings.push(localized_text[i].clone());
-        }
-
-        Ok(quote! {
-            {
-                use crate::_langrustang_gen::Lang::*;
-
-                match #lang_expr {
-                    #( #idents => #strings, )*
-                }
-            }
-        })
-    }
-}
-
-// 最初大文字、それ以降小文字に変換
-fn to_enum_elem_format(text: &str) -> String {
-    if text.is_empty() {
-        return text.to_string();
-    }
-
-    let mut chars = text.chars();
-
-    let first_char = chars.next().unwrap();
-    let first_char = first_char.to_ascii_uppercase();
-
-    let rest: String = chars.collect();
-    let rest = rest.to_ascii_lowercase();
-
-    format!("{}{}", first_char, rest)
 }
 
 #[cfg(test)]
@@ -202,8 +99,46 @@ mod tests {
     fn dbg() {
         _i18n(quote! {"files/test_file.yaml"});
 
-        let token = _lang_t(quote! { "example2", lang }).to_string();
+        let token = _lang_t(quote! { "example1", lang }).to_string();
         dbg!(token);
+    }
+
+    #[test]
+    fn check_1arg_localized() {
+        _i18n(quote! {"files/test_file.yaml"});
+
+        let token = _lang_t(quote! { "example2" }).to_string();
+        assert!(token.contains("Key: example2 is Localized"));
+    }
+
+    #[test]
+    fn check_2arg_localized() {
+        _i18n(quote! {"files/test_file.yaml"});
+
+        let token = _lang_t(quote! { "example1", lang }).to_string();
+        assert!(token.contains("Key: example1 is Not Localized"));
+    }
+
+    #[test]
+    fn test_lang_lang() {
+        _i18n(quote! {"files/test_file.yaml"});
+
+        let token1 = _lang_t(quote! { "example2", lang }).to_string();
+        let token2 = quote! {
+            {
+                use crate::_langrustang_gen::Lang::*;
+
+                match lang {
+                    En => "hello!",
+                    Ja => "おはよう",
+                    Test1 => "TEST1",
+                    Zh => "你好",
+                }
+            }
+        }
+        .to_string();
+
+        assert_eq!(token1, token2)
     }
 
     #[test]
