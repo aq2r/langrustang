@@ -1,0 +1,18 @@
+example1:
+  all: ALL_EXAMPLE
+
+example2:
+  ja: おはよう
+  en: hello!
+  zh: 你好
+  test1: TEST1
+
+example3:
+  ja: おはよう
+  en: hello!
+  zh: 你好
+  test1: TEST1
+  all: ALL
+
+example4:
+  ja: おはよう
