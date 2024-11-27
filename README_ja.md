@@ -5,6 +5,17 @@ yamlを使って多言語対応ができます。
 
 (crates.io での配布はしていません)
 
+<br>
+
+(ほぼ自分用ですが) このクレートを使用するには、
+
+Cargo.toml の dependencies に以下を追記します。
+
+```toml
+# バージョンは適宜変更してください
+langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.0" }
+```
+
 ## How to write yaml
 
 yaml ファイルの書き方:
