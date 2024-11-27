@@ -34,6 +34,14 @@ pub fn check_yaml(yaml: &LangYaml) -> Result<(), String> {
                 return Err("The language key must be in all lowercase.".into());
             }
 
+            // 最後の文字がアンダースコアでないかチェック
+            let mut chars = lang.chars().rev();
+            if let Some('_') = chars.next() {
+                return Err(
+                    "The last character of the language key cannot be an underscore.".into(),
+                );
+            }
+
             // all は除外する
             if lang != "all" {
                 lang_keys.insert(lang);
@@ -44,7 +52,7 @@ pub fn check_yaml(yaml: &LangYaml) -> Result<(), String> {
     Ok(())
 }
 
-/// 1文字目は大文字、それ以降は小文字に変換する
+/// 1文字目は大文字、それ以降は小文字に変換する、アンダーバーがあればその次の文字を大文字にする
 pub fn to_enumval_format(text: &str) -> String {
     let mut chars = text.chars();
     let first_char = match chars.next() {
@@ -52,7 +60,23 @@ pub fn to_enumval_format(text: &str) -> String {
         None => return String::new(),
     };
 
-    let rest: String = chars.map(|i| i.to_ascii_lowercase()).collect();
+    let mut rest: Vec<char> = vec![];
+    let mut is_upper = false;
+    for i in chars {
+        match i {
+            '_' => is_upper = true,
 
-    format!("{}{}", first_char, rest)
+            _ => match is_upper {
+                true => {
+                    rest.push(i.to_ascii_uppercase());
+                    is_upper = false
+                }
+                false => rest.push(i),
+            },
+        }
+    }
+
+    let rest_str: String = rest.iter().collect();
+
+    format!("{}{}", first_char, rest_str)
 }
