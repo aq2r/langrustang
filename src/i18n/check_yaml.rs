@@ -17,18 +17,18 @@ pub fn check_yaml(yaml: &LangYaml) -> Result<(), String> {
                 None => return Err("Failed to get char".into()),
             };
 
-            // 残りの文字が ascii alphabet, または ascii numeric か確かめておく
+            // 残りの文字が ascii alphabet, または ascii numeric または数字、アンダースコか確かめておく
             for c in chars {
-                if !c.is_ascii_alphanumeric() {
+                if !(c.is_ascii_alphanumeric() || c == '_') {
                     return Err("Language keys cannot be anything other than ascii_alphabet or ascii_discrit."
                                             .into());
                 }
             }
 
-            // すべて小文字、または数字かチェック
+            // すべて小文字、または数字、アンダースコアかチェック
             let mut chars = lang.chars();
             let is_disit_and_lowercase =
-                chars.all(|c| c.is_ascii_lowercase() || c.is_ascii_digit());
+                chars.all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_');
 
             if !is_disit_and_lowercase {
                 return Err("The language key must be in all lowercase.".into());

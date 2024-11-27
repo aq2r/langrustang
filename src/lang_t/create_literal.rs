@@ -108,7 +108,7 @@ pub fn literal_and_lang(
 
         Ok(quote! {
             {
-                use crate::_langrustang_gen::Lang::*;
+                use crate::_langrustang_autogen::Lang::*;
 
                 match #lang_expr {
                     #( #idents => #strings, )*
