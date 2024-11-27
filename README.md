@@ -72,7 +72,7 @@ format_t_ex2:
 langrustang::i18n!("lang.yaml");  // Auto-generate `_langrustang_autogen::Lang`
 use crate::_langrustang_autogen::Lang;
 
-use langrustang::lang_t;
+use langrustang::{lang_t, println_t};
 
 fn main() {
     // The enum elements are automatically generated based on the yaml keys.

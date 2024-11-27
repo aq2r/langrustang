@@ -69,7 +69,7 @@ format_t_ex2:
 langrustang::i18n!("lang.yaml");  // `_langrustang_autogen::Lang` を自動生成する
 use crate::_langrustang_autogen::Lang;
 
-use langrustang::lang_t;
+use langrustang::{lang_t, println_t};
 
 fn main() {
     // enum の要素は、yamlに書いたキーによって自動で生成されます
