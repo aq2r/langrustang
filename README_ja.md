@@ -3,6 +3,8 @@ Rustの多言語対応用プログラム
 
 yamlを使って多言語対応ができます。
 
+(crates.io での配布はしていません)
+
 ## How to write yaml
 
 yaml ファイルの書き方:

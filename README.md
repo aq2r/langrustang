@@ -6,6 +6,8 @@ Multilingual Support for Rust Program
 
 Multilingual support is possible based on yaml.
 
+(Not distributed on crates.io)
+
 ## How to write yaml
 
 The yaml file is written in the following format:
