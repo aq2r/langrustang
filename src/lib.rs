@@ -114,7 +114,8 @@
 //!
 //! // println!("{}", lang_t!("lang_t_ex4", lang_en)); // Compile Error!
 //! ```
-//!
+
+mod format_t;
 mod i18n;
 mod lang_t;
 mod lang_yaml;
@@ -124,6 +125,7 @@ use std::{
     sync::{LazyLock, Mutex},
 };
 
+use format_t::_format_t;
 use i18n::_i18n;
 use lang_t::_lang_t;
 use lang_yaml::LangYaml;
@@ -164,4 +166,9 @@ pub fn i18n(tokens: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn lang_t(tokens: TokenStream) -> TokenStream {
     _lang_t(tokens.into()).into()
+}
+
+#[proc_macro]
+pub fn format_t(tokens: TokenStream) -> TokenStream {
+    _format_t(tokens.into()).into()
 }

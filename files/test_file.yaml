@@ -15,4 +15,8 @@ example3:
   all: ALL
 
 example4:
+  all: ALL
+  ja: おはよう
+
+example5:
   ja: おはよう

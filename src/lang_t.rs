@@ -27,6 +27,12 @@ fn lang_t_parse(input: ParseStream) -> Result<TokenStream> {
     // 簡単にリターンできる用のクロージャ
     let err_return = |s: String| Err(Error::new(parsed.span(), s));
 
+    match parsed.len() {
+        0 => return Err(Error::new(input.span(), "Expected string literal")),
+        3.. => return Err(Error::new(input.span(), "Too many args")),
+        _ => (),
+    };
+
     // yamldata の取得 i18n が使われていなかったら返す
     let yaml_data = {
         let lock = YAML_DATA.lock().unwrap();
@@ -145,7 +151,7 @@ mod tests {
     fn test_missing() {
         _i18n(quote! {"files/test_file.yaml"});
 
-        let token1 = _lang_t(quote! { "example4", lang }).to_string();
+        let token1 = _lang_t(quote! { "example5", lang }).to_string();
         assert!(token1.contains("Missing language key"));
     }
 
