@@ -126,7 +126,7 @@ mod tests {
         let token1 = _lang_t(quote! { "example2", lang }).to_string();
         let token2 = quote! {
             {
-                use crate::_langrustang_gen::Lang::*;
+                use crate::_langrustang_autogen::Lang::*;
 
                 match lang {
                     En => "hello!",

@@ -89,7 +89,10 @@ pub fn literal_and_lang(
             let mut missing: HashSet<_> = yaml_langs.difference(&localized_lang).collect();
             missing.remove(&"all".to_string());
 
-            return err_return(format!("Missing language key: {:?}", missing));
+            let mut sorted_missing: Vec<_> = missing.iter().collect();
+            sorted_missing.sort();
+
+            return err_return(format!("Missing language key: {:?}", sorted_missing));
         }
 
         // ソートしてから渡す

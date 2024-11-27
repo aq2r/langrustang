@@ -126,7 +126,7 @@ mod tests {
     fn test_i18n_ok() {
         let token1 = _i18n(quote! { "files/test_file.yaml" }).to_string();
         let token2 = quote! {
-           pub mod _langrustang_gen {
+           pub mod _langrustang_autogen {
                #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
                pub enum Lang {
                    En,
