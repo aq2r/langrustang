@@ -164,4 +164,19 @@ mod tests {
 
         assert_eq!(token1, token2)
     }
+
+    #[test]
+    fn expect_str() {
+        _i18n(quote! {"files/test_file.yaml"});
+
+        let token1 = _lang_t(quote! {}).to_string();
+        assert!(dbg!(token1).contains("Expected string literal"));
+    }
+
+    #[test]
+    #[ignore]
+    fn not_used_i18n() {
+        let token1 = _lang_t(quote! { "example1" }).to_string();
+        assert!(dbg!(token1).contains("langrustang::i18n is not used, please set the yaml path."));
+    }
 }
