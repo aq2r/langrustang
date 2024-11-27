@@ -63,7 +63,7 @@ pub fn format_t_parse(input: ParseStream) -> Result<TokenStream> {
         localized_text.len() == 1 && localized_text.iter().any(|(lang, _)| lang == "all");
 
     match is_allonly_key {
-        true => create_literal::allkey_only(parsed, localized_text, &key),
+        true => create_literal::allkey_only(parsed, localized_text),
         false => create_literal::not_allkey_only(parsed, localized_text),
     }
 }

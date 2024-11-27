@@ -10,7 +10,6 @@ use crate::{i18n::check_yaml, lang_yaml::LocalizedText, YAML_LANGS};
 pub fn allkey_only(
     parsed: Punctuated<Expr, Comma>,
     localized_text: &LocalizedText,
-    key: &str,
 ) -> Result<TokenStream> {
     let err_return = |s: String| Err(Error::new(parsed.span(), s));
 
