@@ -16,7 +16,7 @@ add the following to the dependencies in your Cargo.toml:
 
 ```toml
 # Please change the tag version accordingly.
-langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.0" }
+langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.2" }
 ```
 
 ## How to write yaml

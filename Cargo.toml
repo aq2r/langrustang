@@ -1,7 +1,9 @@
 [package]
 name = "langrustang"
-version = "0.1.0"
+version = "1.1.2"
 edition = "2021"
+license-file = "LICENSE"
+repository = "https://github.com/aq2r/langrustang"
 
 [lib]
 proc-macro = true
