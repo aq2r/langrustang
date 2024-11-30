@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, ops::Deref};
 
-use crate::{YAML_MODIFIED_TIME, YAML_PATH};
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(transparent)]
 pub(crate) struct LangYaml(pub HashMap<String, LocalizedText>);
