@@ -1,6 +1,6 @@
 # langrustang
 
-[日本語の説明はこちら](./README_ja.md)
+English (Google or DeepL translate) | [日本語](./README_ja.md)
 
 Multilingual Support for Rust Program
 
