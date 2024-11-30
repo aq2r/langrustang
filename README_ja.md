@@ -13,7 +13,7 @@ Cargo.toml の dependencies に以下を追記します。
 
 ```toml
 # バージョンは適宜変更してください
-langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.2" }
+langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.3" }
 ```
 
 ## How to write yaml
@@ -158,9 +158,3 @@ let name = "Ferris";
 println_t!("format_t_ex1", name); // Hi, Ferris!
 println_t!("format_t_ex2", lang_ja, name); // Ferris, おはよう!
 ```
-
-## コードが正しいのにエラーが発生する
-
-コードが正しいのに vscode でエラーが発生する場合は、
-
-rust-analyzer を再起動すると解決します。

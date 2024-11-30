@@ -144,12 +144,6 @@
 //! println_t!("format_t_ex1", name); // Hi, Ferris!
 //! println_t!("format_t_ex2", lang_ja, name); // Ferris, おはよう!
 //! ```
-//!
-//! ## error even though the code is correct
-//!
-//! If you get an error in vscode even though your code is correct,
-//!
-//! restarting rust-analyzer will resolve the issue.
 
 mod format_t;
 mod i18n;
@@ -160,7 +154,8 @@ mod println_t;
 
 use std::{
     collections::HashSet,
-    sync::{LazyLock, Mutex},
+    sync::{LazyLock, Mutex, RwLock},
+    time::SystemTime,
 };
 
 use format_t::_format_t;
@@ -172,6 +167,8 @@ use println_t::_println_t;
 use proc_macro::TokenStream;
 
 pub(crate) static YAML_PATH: LazyLock<Mutex<String>> = LazyLock::new(|| Mutex::new(String::new()));
+pub(crate) static YAML_MODIFIED_TIME: LazyLock<RwLock<SystemTime>> =
+    LazyLock::new(|| RwLock::new(SystemTime::now()));
 pub(crate) static YAML_DATA: LazyLock<Mutex<Option<LangYaml>>> = LazyLock::new(|| Mutex::new(None));
 pub(crate) static YAML_LANGS: LazyLock<Mutex<HashSet<String>>> =
     LazyLock::new(|| Mutex::new(HashSet::new()));

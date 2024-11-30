@@ -1,4 +1,5 @@
 pub mod check_yaml;
+pub mod update_yaml;
 
 use std::{collections::HashSet, path::PathBuf};
 

@@ -16,7 +16,7 @@ add the following to the dependencies in your Cargo.toml:
 
 ```toml
 # Please change the tag version accordingly.
-langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.2" }
+langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.3" }
 ```
 
 ## How to write yaml
@@ -161,9 +161,3 @@ let name = "Ferris";
 println_t!("format_t_ex1", name); // Hi, Ferris!
 println_t!("format_t_ex2", lang_ja, name); // Ferris, おはよう!
 ```
-
-## error even though the code is correct
-
-If you get an error in vscode even though your code is correct,
-
-restarting rust-analyzer will resolve the issue.
