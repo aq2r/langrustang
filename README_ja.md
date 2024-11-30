@@ -1,4 +1,6 @@
 # langrustang
+[English (Google or DeepL translate)](./README.md) | 日本語
+
 Rustの多言語対応用プログラム
 
 yamlを使って多言語対応ができます。
