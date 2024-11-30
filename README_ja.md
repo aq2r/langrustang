@@ -13,7 +13,7 @@ Cargo.toml の dependencies に以下を追記します。
 
 ```toml
 # バージョンは適宜変更してください
-langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.3" }
+langrustang = { git = "https://github.com/aq2r/langrustang", tag = "v1.1.4" }
 ```
 
 ## How to write yaml
