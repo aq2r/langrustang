@@ -8,7 +8,7 @@ use syn::{
     Error, Expr, ExprLit, Lit, Result, Token,
 };
 
-use crate::YAML_DATA;
+use crate::{i18n::update_yaml::if_update_reload_yaml, YAML_DATA};
 
 pub fn _format_t(tokens: TokenStream) -> TokenStream {
     format_t_parse
@@ -35,6 +35,9 @@ pub fn format_t_parse(input: ParseStream) -> Result<TokenStream> {
             }
         }
     };
+
+    // yaml が更新されていたら static を更新
+    let _ = if_update_reload_yaml();
 
     match parsed.len() {
         0 => return Err(Error::new(input.span(), "Expected string literal")),

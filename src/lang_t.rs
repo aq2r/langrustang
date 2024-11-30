@@ -8,7 +8,7 @@ use syn::{
     Error, Expr, ExprLit, Lit, Result, Token,
 };
 
-use crate::{YAML_DATA, YAML_LANGS};
+use crate::{i18n::update_yaml::if_update_reload_yaml, YAML_DATA, YAML_LANGS};
 
 pub fn _lang_t(tokens: TokenStream) -> TokenStream {
     lang_t_parse
@@ -32,6 +32,9 @@ fn lang_t_parse(input: ParseStream) -> Result<TokenStream> {
         3.. => return Err(Error::new(input.span(), "Too many args")),
         _ => (),
     };
+
+    // yaml が更新されていたら static を更新
+    let _ = if_update_reload_yaml();
 
     // yamldata の取得 i18n が使われていなかったら返す
     let yaml_data = {
